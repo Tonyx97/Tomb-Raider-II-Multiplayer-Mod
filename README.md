@@ -1,6 +1,6 @@
 # Tomb Raider II Multiplayer Mod
  
-This is a modification that implements multiplayer functionalities to the game Tomb Raider II.
+This is a modification that implements multiplayer functionalities to the game Tomb Raider II using C++17.
 
 This project has two dependencies, [SlikeNet](https://www.slikesoft.com/) and [MinHook](https://github.com/TsudaKageyu/minhook). Compiled library binaries must be placed in the following directory: **"SolutionDir\deps\libs\"** .
 
