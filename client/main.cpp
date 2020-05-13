@@ -59,7 +59,7 @@ int main_thread()
 
 	// connect to the server
 
-	if (!g_client->connect("212.114.52.62", GAME_PORT))
+	if (!g_client->connect("127.0.0.1", GAME_PORT))
 		return dbg::mod_error(L"Connection setup failed");
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
