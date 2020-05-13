@@ -7,3 +7,5 @@ This project has two dependencies, [SlikeNet](https://www.slikesoft.com/) and [M
 Must be compiled in 32 (x86) bits because the modifications are carried out using the client as a DLL.
 
 Credits to SlikeNet, MinHook and [Arsunt](https://github.com/Arsunt/TR2Main) whose project helped me reversing some game structures and functions.
+
+NOTE: This project is just an early testing version of the mod, there are a few bugs when synchronizing entities such as vehicles or doors. Besides those bugs, the mod can be completely used to play with friends and complete the whole game together.
