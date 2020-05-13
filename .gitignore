@@ -1,0 +1,14 @@
+*.suo
+*.db
+*.pdb
+*.ipch
+*.opendb
+*.db-shm
+*.db-wal
+*.txt
+*.obj
+*.log
+*.tlog
+*.lib
+bins/
+Executer/
