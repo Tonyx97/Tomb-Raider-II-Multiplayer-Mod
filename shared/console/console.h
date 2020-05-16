@@ -44,6 +44,7 @@ namespace console
 	struct vec2 { int16_t x = 0, y = 0; };
 
 	void init();
+	void init_basic();
 	void show_cursor(bool show);
 	void enable_input(bool enabled);
 	void unblock_input();

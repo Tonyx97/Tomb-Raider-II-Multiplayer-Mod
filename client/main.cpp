@@ -8,12 +8,12 @@
 
 #include <client/client.h>
 
-#include <console/console.h>
+#include <shared/console/console.h>
+#include <shared/registry/registry.h>
+#include <shared/debug/debug.h>
 
-#include <debug.h>
 #include <mhwrapper.h>
 #include <vehhook.h>
-#include <registry.h>
 #include <net_game_logic.h>
 #include <local_game.h>
 #include <game_logic.h>
@@ -23,11 +23,36 @@
 #include <gui.h>
 #include <keyboard.h>
 
+#define OPEN_DEBUG 0
+
 HINSTANCE g_dll_instance = nullptr;
+
+std::atomic_bool g_close_game = false;
+
+void clean_resources()
+{
+	g_game->destroy();
+	g_registry->destroy();
+
+	g_client.reset();
+	g_room_system.reset();
+	g_entity_system.reset();
+	g_player_system.reset();
+	g_game.reset();
+	g_local_game.reset();
+	g_net_game.reset();
+	g_gui.reset();
+	g_registry.reset();
+	g_veh.reset();
+
+	g_close_game = true;
+}
 
 int main_thread()
 {
+#if OPEN_DEBUG
 	console::init();
+#endif
 
 	g_mh.reset(new MHWrapper());
 	g_veh.reset(new VEHHKR());
@@ -57,48 +82,43 @@ int main_thread()
 	if (!g_client->init())
 		return dbg::mod_error(L"Client init failed");
 
-	// connect to the server
+	if (!g_kb->init())
+		return dbg::mod_error(L"Input system init failed");
 
-	if (!g_client->connect("212.114.52.62", GAME_PORT))
+	// connect to the server
+	// main server: 212.114.52.62
+
+	const std::string ip = GetCommandLineA();
+
+	if (!g_client->connect(ip.c_str(), GAME_PORT))
 		return dbg::mod_error(L"Connection setup failed");
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	// check if we are connected to the server
 
-	for (auto i = 0; (i < 5 && !g_client->is_connected()); ++i)
+	for (auto i = 0; (i < 4 && !g_client->is_connected()); ++i)
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	if (!g_client->is_connected())
 		return dbg::mod_error(L"Connection to the server failed");
 
-	if (!g_kb->init())
-		return dbg::mod_error(L"Input system init failed");
-
 	// idle this thread
 
-	while (!g_kb->is_key_pressed_w(VK_F8) && g_client->is_connected())
+	while (
+#if OPEN_DEBUG
+		!GetAsyncKeyState(VK_F8) &&
+#endif
+		!g_close_game)
+	{
 		std::this_thread::sleep_for(std::chrono::microseconds(7812));
-
-	// clean and destroy systems
+	}
 
 	g_kb->destroy();
-	g_game->destroy();
 	g_mh->destroy();
-	g_registry->destroy();
 
-	g_client.reset();
-	g_room_system.reset();
-	g_entity_system.reset();
-	g_player_system.reset();
-	g_kb.reset();
-	g_game.reset();
-	g_local_game.reset();
-	g_net_game.reset();
-	g_gui.reset();
-	g_registry.reset();
-	g_veh.reset();
 	g_mh.reset();
+	g_kb.reset();
 
 	FreeLibraryAndExitThread(g_dll_instance, 0);
 

@@ -4,11 +4,11 @@
 
 #include <shared/net/game_net_structs.h>
 
-#include <console/console.h>
+#include <shared/console/console.h>
+#include <shared/utils/utils.h>
 
 #include <client/client.h>
 
-#include <utils.h>
 #include <keyboard.h>
 #include <room.h>
 #include <player.h>

@@ -2,10 +2,15 @@
 
 #include <Windows.h>
 
+#include <thread>
+
 #include <mhwrapper.h>
 
 #include <offsets.h>
 #include <gui.h>
+#include <game_logic.h>
+
+#include <main.h>
 
 using wnd_proc_t = int(__stdcall*)(HWND, UINT, WPARAM, LPARAM);
 wnd_proc_t wnd_proc = nullptr;
@@ -14,6 +19,8 @@ int __stdcall hk_window_proc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	if (msg == WM_CHAR)
 		g_gui->on_char_callback(wp);
+	else if (msg == WM_DESTROY)
+		clean_resources();
 
 	return wnd_proc(hwnd, msg, wp, lp);
 }

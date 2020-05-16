@@ -2,20 +2,20 @@
 
 #include <Windows.h>
 
-#include <debug.h>
-#include <utils.h>
+#include <shared/debug/debug.h>
+#include <shared/utils/utils.h>
 
 bool Registry::init()
 {
-	if (RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Core Design\\Tomb Raider II\\Online\\", &key) != ERROR_SUCCESS)
+	if (RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Core Design\\Tomb Raider II\\Online", &key) != ERROR_SUCCESS)
 		return dbg::mod_error(L"Could not create registry key");
 
-	DWORD size;
+	DWORD size = 0;
 	char name[16] { 0 };
 
 	if (RegQueryValueEx(key, L"nickname", nullptr, nullptr, (BYTE*)name, &size) == ERROR_FILE_NOT_FOUND)
 	{
-		const auto& default_name = utils::rand_str(8);
+		const auto default_name = utils::rand_str(8);
 
 		RegSetValueExA(key, "nickname", 0, REG_SZ, (const BYTE*)default_name.data(), default_name.length());
 	}
@@ -30,8 +30,8 @@ void Registry::destroy()
 
 std::string Registry::get_string(const char* value_name)
 {
-	DWORD size;
-	char temp_data[128] { 0 };
+	DWORD size = MAX_PATH;
+	char temp_data[MAX_PATH] { 0 };
 
 	return (RegQueryValueExA(key, value_name, nullptr, nullptr, (BYTE*)temp_data, &size) == ERROR_SUCCESS ? std::string(temp_data) : "");
 }

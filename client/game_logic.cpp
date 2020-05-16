@@ -6,12 +6,12 @@
 
 #include <vehhook.h>
 
-#include <console/console.h>
+#include <shared/console/console.h>
+#include <shared/debug/debug.h>
+#include <shared/utils/utils.h>
 
 #include <client/client.h>
 
-#include <debug.h>
-#include <utils.h>
 #include <local_game.h>
 #include <net_game_logic.h>
 #include <audio.h>
@@ -136,7 +136,7 @@ bool GameLogic::destroy()
 	g_veh->remove_hook(offsets::SET_ACTIVATION_FLAGS_MF);
 
 	// unhook all functions
-
+	
 	g_mh->unhook_fn(offsets::CREATE_BOAT_WATER_SPLASH);
 	g_mh->unhook_fn(offsets::FLIP_ROOM);
 	g_mh->unhook_fn(offsets::DESTROY_GLASS_WINDOW);
@@ -176,10 +176,21 @@ int32_t GameLogic::hk_update_input()
 	offvar::dynamic_lights_count = 0;
 
 	// receive all network packets
+
 	g_client->dispatch_packets();
 
 	// render chat
+
 	g_gui->render_chat();
+
+	// display initialized message
+
+	if (offvar::game_state == 1)
+	{
+		static std::once_flag flag;
+
+		std::call_once(flag, []() { g_gui->add_new_message("TRIIO initialized"); });
+	}
 
 	return (can_update ? update_input() : 0);
 }

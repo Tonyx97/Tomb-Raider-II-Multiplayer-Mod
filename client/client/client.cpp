@@ -6,9 +6,9 @@
 
 #include <shared/game/math.h>
 
-#include <console/console.h>
+#include <shared/console/console.h>
+#include <shared/registry/registry.h>
 
-#include <registry.h>
 #include <entity.h>
 #include <net_game_logic.h>
 #include <game_logic.h>

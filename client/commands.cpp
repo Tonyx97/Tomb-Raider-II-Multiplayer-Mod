@@ -2,9 +2,10 @@
 
 #include <client/client.h>
 
-#include <utils.h>
+#include <shared/registry/registry.h>
+#include <shared/utils/utils.h>
+
 #include <gui.h>
-#include <registry.h>
 #include <entity.h>
 #include <room.h>
 #include <player.h>

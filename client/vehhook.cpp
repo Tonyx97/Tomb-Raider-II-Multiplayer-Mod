@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-#include <utils.h>
+#include <shared/utils/utils.h>
 
 LONG __stdcall global_veh(struct _EXCEPTION_POINTERS* exception)
 {

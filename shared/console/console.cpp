@@ -1,11 +1,11 @@
-﻿#include "console.h"
+﻿#define _CRT_SECURE_NO_WARNINGS
+
+#include "console.h"
 
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
 #include <thread>
-
-#include <utils.h>
 
 static char g_anim_1[] = { '/', '-', '\\', '-', '|' };
 static char g_anim_2[] = { '<', 'V', '>', '^' };
@@ -52,6 +52,37 @@ void console::init()
 	SetForegroundWindow(console_window);
 	BringWindowToTop(game_window);
 	SetForegroundWindow(game_window);
+
+	show_cursor(false);
+	enable_input(false);
+}
+
+void console::init_basic()
+{
+	SetConsoleTitle(L"TRIIO");
+
+	auto screen_width = GetSystemMetrics(SM_CXSCREEN);
+	auto screen_height = GetSystemMetrics(SM_CYSCREEN);
+
+	auto console_window = GetConsoleWindow();
+
+	CONSOLE_FONT_INFOEX cfi{ 0 };
+	cfi.cbSize = sizeof(cfi);
+
+	GetCurrentConsoleFontEx(CONSOLE_OUT, FALSE, &cfi);
+
+	cfi.dwFontSize.X = 0;
+	cfi.dwFontSize.Y = 16;
+	wcscpy_s(cfi.FaceName, L"Courier New");
+
+	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+	SetConsoleTextAttribute(CONSOLE_OUT, white);
+
+	SetWindowPos(console_window, 0, screen_width / 2 - 400, screen_height / 2 - 400, 800, 800, 0);
+	ShowWindow(console_window, SW_SHOW);
+
+	BringWindowToTop(console_window);
+	SetForegroundWindow(console_window);
 
 	show_cursor(false);
 	enable_input(false);

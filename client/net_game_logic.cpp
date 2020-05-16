@@ -2,9 +2,9 @@
 
 #include <client/client.h>
 
-#include <console/console.h>
+#include <shared/console/console.h>
+#include <shared/debug/debug.h>
 
-#include <debug.h>
 #include <audio.h>
 #include <gui.h>
 #include <entity.h>

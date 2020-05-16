@@ -2,12 +2,11 @@
 
 #include <tuple>
 
-#include <console/console.h>
+#include <shared/console/console.h>
 
 #include <client/client.h>
 
 #include <offsets.h>
-#include <registry.h>
 #include <entity.h>
 #include <player.h>
 #include <local_game.h>
