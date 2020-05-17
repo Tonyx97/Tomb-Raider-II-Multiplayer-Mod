@@ -12,10 +12,9 @@ Credits to SlikeNet, MinHook and [Arsunt](https://github.com/Arsunt/TR2Main) who
 
 **Features included:**
 
-
-· Full synchronization of players except for "rifle" weapons animations (shotgun, m16, harpoon and grenader launcher).
-· Synchronization for PVP (Player vs Player).
-· Synchronization of flipped rooms to ensure proper player sync.
+- Full synchronization of players except for "rifle" weapons animations (shotgun, m16, harpoon and grenader launcher).
+- Synchronization for PVP (Player vs Player).
+- Synchronization of flipped rooms to ensure proper player sync.
 · Synchronization of enemies and other entities like boats, skidoos, doors etc.
 · Full support for all levels. There is a bug in "Home sweet home" that displays the wrong waist of Lara, it will be fixed in future updates.
 · Complete chat to talk (type) with players and commands.
