@@ -10,7 +10,7 @@ Credits to SlikeNet, MinHook and [Arsunt](https://github.com/Arsunt/TR2Main) who
 
 **NOTE: This project is just an early testing version of the mod, there are a few bugs when synchronizing entities such as vehicles and doors. Besides those bugs, the mod can be completely used to play and complete the game with friends.**
 
-**Some of the currently features included:**
+**Some of the current features included:**
 
 - Full synchronization of players except for "rifle" weapons animations (shotgun, m16, harpoon and grenader launcher).
 - Synchronization for PVP (Player vs Player).
