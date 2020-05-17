@@ -29,9 +29,9 @@ Credits to SlikeNet, MinHook and [Arsunt](https://github.com/Arsunt/TR2Main) who
 
 **Binaries usage:**
 
-- 1 Download the latest version of the mod and extract it anywhere.
-- 2 If you own a hosted virtual server/dedicated server you should place **_TRIIO_SV.exe_** and **_settings.ini_** together in your server. If you don't own any of this, you could use Hamachi to open your server to other people, as long as both files are together you can place them wherever you please.
-- 3 Open **_TRIIO_SV.exe_** to initialize the server, once it's initialized you can go ahead and open **_TRIIO.exe_** which is the client that will launch the game and connect to the server. You need to specify the location of the game when you first open the client.
-- 4 To connect to a server you have to use the command "connect" which can take none or one parameter, in the case you don't specify any parameter it will connect automatically to the last joined server, otherwise you have to specify the ip of the server, an example is **"connect 127.0.0.1"**.
+- 1. Download the latest version of the mod and extract it anywhere.
+- 2. If you own a hosted virtual server/dedicated server you should place **_TRIIO_SV.exe_** and **_settings.ini_** together in your server. If you don't own any of this, you could use Hamachi to open your server to other people, as long as both files are together you can place them wherever you please.
+- 3. Open **_TRIIO_SV.exe_** to initialize the server, once it's initialized you can go ahead and open **_TRIIO.exe_** which is the client that will launch the game and connect to the server. You need to specify the location of the game when you first open the client.
+- 4. To connect to a server you have to use the command "connect" which can take none or one parameter, in the case you don't specify any parameter it will connect automatically to the last joined server, otherwise you have to specify the ip of the server, an example is **"connect 127.0.0.1"**.
 
 Brief showcase of the mod: https://www.youtube.com/watch?v=Uq37HU1494s
