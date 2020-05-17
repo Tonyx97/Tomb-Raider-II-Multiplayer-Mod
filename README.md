@@ -19,13 +19,13 @@ Credits to SlikeNet, MinHook and [Arsunt](https://github.com/Arsunt/TR2Main) who
 · Full support for all levels. There is a bug in "Home sweet home" that displays the wrong waist of Lara, it will be fixed in future updates.
 - Complete chat to talk (type) with players and commands.
 - Many commands for utilities in game, the following ones are a few of them:
-    - "boom": makes your lara explode.
-    - "name <new_name>": change your name in the server.
-    - "tp <player_name>": teleport to other player, you can also type the player's partial name and it will automatically find it.
-    - "level <level_name>": teleport to the beginning of the specified level.
-    - "ff <state>": toggle friendly fire, an example would be "ff true" to enable it or "ff 0" to disable it.
-    - "give_item <item_name>": receive an item.
-    - "kill": kill yourself with this command.
+    - **"boom":** makes your lara explode.
+    - **"name <new_name>":** change your name in the server.
+    - **"tp <player_name>":** teleport to other player, you can also type the player's partial name and it will automatically find it.
+    - **"level <level_name>":** teleport to the beginning of the specified level.
+    - **"ff <state>":** toggle friendly fire, an example would be "ff true" to enable it or "ff 0" to disable it.
+    - **"give_item <item_name>":** receive an item.
+    - **"kill":** kill yourself with this command.
 
 **Binaries usage:**
 
