@@ -626,7 +626,10 @@ uint32_t GameLogic::hk_play_audio(eAudioID id, ivec3* position, uint32_t sfx)
 
 	const auto ret_addr = (uintptr_t)_ReturnAddress();
 
-	if (ret_addr >= offsets::IGNORE_SOUNDS_BOAT_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_BOAT_END)
+	if (ret_addr >= offsets::IGNORE_SOUNDS_BOAT_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_BOAT_END ||
+		ret_addr >= offsets::IGNORE_SOUNDS_SKIDOO_1_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_SKIDOO_1_END ||
+		ret_addr >= offsets::IGNORE_SOUNDS_SKIDOO_2_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_SKIDOO_2_END ||
+		ret_addr == offsets::IGNORE_SOUNDS_SKIDOO_EXPLODE)
 	{
 		/*g_client->send_packet<play_audio_info>(ID_PLAY_AUDIO,
 												{
@@ -646,12 +649,9 @@ uint32_t GameLogic::hk_play_audio(eAudioID id, ivec3* position, uint32_t sfx)
 		ret_addr >= offsets::IGNORE_SOUNDS_DISK_EMITTER_IN_RANGE_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_DISK_EMITTER_IN_RANGE_END ||
 		ret_addr >= offsets::IGNORE_SOUNDS_DISK_IN_RANGE_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_DISK_IN_RANGE_END ||
 		ret_addr >= offsets::IGNORE_SOUNDS_SFX_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_SFX_END ||
-		ret_addr >= offsets::IGNORE_SOUNDS_SKIDOO_1_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_SKIDOO_1_END ||
-		ret_addr >= offsets::IGNORE_SOUNDS_SKIDOO_2_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_SKIDOO_2_END ||
 		ret_addr >= offsets::IGNORE_SOUNDS_INVENTORY_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_INVENTORY_END ||
 		ret_addr >= offsets::IGNORE_SOUNDS_ROLLING_BOULDER_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_ROLLING_BOULDER_END ||
 		ret_addr >= offsets::IGNORE_SOUNDS_PROPELLER_BEGIN && ret_addr < offsets::IGNORE_SOUNDS_PROPELLER_END ||
-		ret_addr == offsets::IGNORE_SOUNDS_SKIDOO_EXPLODE ||
 		ret_addr == offsets::IGNORE_SOUNDS_SPIKE_WALL_MOVING)
 	{
 		return play_audio(id, position, sfx);

@@ -76,6 +76,7 @@
     <IncludePath>$(SolutionDir);$(SolutionDir)deps;$(SolutionDir)deps\include;$(SolutionDir)triio_s;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)deps\libs;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bins\</OutDir>
+    <TargetName>TRIIO_SV</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -160,14 +161,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\shared\console\console.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="server\server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\shared\console\console.h" />
     <ClInclude Include="..\shared\net\bitstream.h" />
     <ClInclude Include="..\shared\net\game_net_structs.h" />
     <ClInclude Include="..\shared\net\messages.h" />
     <ClInclude Include="server\server.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\release.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

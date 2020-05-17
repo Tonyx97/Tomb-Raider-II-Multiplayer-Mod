@@ -1,8 +1,14 @@
 #include "server.h"
 
-#include <shared/game/math.h>
+#include <fstream>
+#include <stdio.h>
+#include <string>
+#include <iostream>
+#include <regex>
 
+#include <shared/game/math.h>
 #include <shared/net/game_net_structs.h>
+#include <shared/console/console.h>
 
 Server::Server()
 {
@@ -39,6 +45,100 @@ bool Server::init()
 	peer->SetOccasionalPing(true);
 	peer->SetUnreliableTimeout(1000);
 
+	int settings_count = 0;
+
+	auto dispatch_settings_file = [&](std::ifstream& file)
+	{
+		std::string line;
+
+		while (std::getline(file, line))
+		{
+			std::smatch match;
+			std::regex reg("([a-zA-Z0-9\\_]+)(\\([0-9]\\))\\=([a-zA-Z0-9\\_\\.]+)");
+
+			if (std::regex_match(line, match, reg))
+			{
+				const auto value_name = match[1].str();
+
+				switch (match[2].str()[1] - 0x30)
+				{
+				case 0:
+				{
+					const std::string value_str = match[3].str();
+
+					bool value = false;
+
+					switch (value_str.length())
+					{
+					case 1:
+					{
+						value = (*(uint8_t*)value_str.data() == '1');
+						break;
+					}
+					case 4:
+					{
+						value = (*(uint32_t*)value_str.data() == 'eurt');
+						break;
+					}
+					}
+
+					println(color::cyan, "%s = %i", value_name.c_str(), value);
+
+					settings.insert({ value_name, value });
+
+					break;
+				}
+				case 1:
+				{
+					int value = std::atol(match[3].str().c_str());
+
+					println(color::cyan, "%s = %i", value_name.c_str(), value);
+
+					settings.insert({ value_name, value });
+
+					break;
+				}
+				case 2:
+				{
+					float value = std::atof(match[3].str().c_str());
+
+					println(color::cyan, "%s = %f", value_name.c_str(), value);
+
+					settings.insert({ value_name, value });
+
+					break;
+				}
+				}
+
+				++settings_count;
+			}
+		}
+	};
+
+	println(color::yellow, "Settings:\n");
+
+	if (auto settings_file = std::ifstream("settings.ini"))
+	{
+		dispatch_settings_file(settings_file);
+
+		if (settings_count == 0)
+			println(color::yellow, "None");
+
+		println(color::yellow, "\nTotal settings: %i\n", settings_count);
+	}
+	else println(color::red, "settings.ini file does not exist, please re-download the file");
+
+	if (!set_setting("sync_enemies", sync_enemies) ||
+		!set_setting("sync_general_entities", sync_general_entities) ||
+		!set_setting("sync_blocks", sync_blocks) ||
+		!set_setting("sync_doors", sync_doors) ||
+		!set_setting("sync_vehicles", sync_vehicles))
+	{
+		println(color::red, "There is a missing setting");
+	}
+
+	println(color::green, "TRIIO Server initialized\n");
+
 	return (bs_ready = true);
 }
 
@@ -51,14 +151,14 @@ void Server::dispatch_packets()
 		switch (const auto packet_id = get_packet_id(p, bs_in))
 		{
 		case ID_INCOMPATIBLE_PROTOCOL_VERSION:
-			printf("Incompatible protocol version\n");
+			println(color::red, "Incompatible protocol version\n");
 			break;
 		case ID_DISCONNECTION_NOTIFICATION:
 		case ID_CONNECTION_LOST:
 		{
 			if (packet_id == ID_DISCONNECTION_NOTIFICATION)
-				printf("Disconnection notification from %s (0x%llx)\n", p->systemAddress.ToString(true), p->guid.g);
-			else printf("Connection lost from 0x%llx\n", p->guid.g);
+				println(color::yellow, "Disconnection notification from %s (0x%llx)", p->systemAddress.ToString(true), p->guid.g);
+			else println(color::yellow, "Connection lost from 0x%llx", p->guid.g);
 
 			player_joined_left_info info;
 
@@ -81,7 +181,7 @@ void Server::dispatch_packets()
 		}
 		case ID_NEW_INCOMING_CONNECTION:
 		{
-			printf("New incoming connection from %s with GUID 0x%llx\n", p->systemAddress.ToString(true), p->guid.g);
+			println(color::green, "New connection from %s (0x%llx)", p->systemAddress.ToString(true), p->guid.g);
 
 			player_list_info player_list {};
 
@@ -150,6 +250,9 @@ void Server::dispatch_packets()
 		{
 			enable_enemy_ai_info info; read_packet(bs_in, info);
 
+			if (!sync_enemies)
+				break;
+
 			auto it = streamed_entities.find(info.id);
 
 			if (it == streamed_entities.end())
@@ -164,6 +267,9 @@ void Server::dispatch_packets()
 		{
 			enemy_info info; read_packet(bs_in, info);
 
+			if (!sync_enemies)
+				break;
+
 			if (auto it = streamed_entities.find(info.id);
 				it != streamed_entities.end() && it->second == p->guid.g)
 			{
@@ -175,6 +281,9 @@ void Server::dispatch_packets()
 		case ID_DAMAGE_ENEMY:
 		{
 			damage_enemy_info info; read_packet(bs_in, info);
+
+			if (!sync_enemies)
+				break;
 
 			send_packet_broadcast(ID_DAMAGE_ENEMY, p->systemAddress, true, info);
 
@@ -232,6 +341,10 @@ void Server::dispatch_packets()
 		{
 			set_entity_active_info info; read_packet(bs_in, info);
 
+			if ((!sync_general_entities && info.type == 0x41554D) ||
+				(!sync_blocks && info.type == 0x433D22))
+				break;
+
 			send_packet_broadcast(ID_SET_ENTITY_ACTIVE, p->systemAddress, true, info);
 
 			break;
@@ -256,6 +369,9 @@ void Server::dispatch_packets()
 		{
 			set_activation_flags_info info; read_packet(bs_in, info);
 
+			if (!sync_doors)
+				break;
+
 			send_packet_broadcast(ID_SET_ACTIVATION_FLAGS, p->systemAddress, true, info);
 
 			break;
@@ -263,6 +379,9 @@ void Server::dispatch_packets()
 		case ID_VEHICLE_INFO:
 		{
 			vehicle_info info; read_packet(bs_in, info);
+
+			if (!sync_vehicles)
+				break;
 
 			// use (anim_id == 0) as indicator that the player
 			// left the vehicle so we can release the control etc
@@ -289,12 +408,15 @@ void Server::dispatch_packets()
 		{
 			create_boat_water_splash_info info; read_packet(bs_in, info);
 
+			if (!sync_vehicles)
+				break;
+
 			send_packet_broadcast(ID_CREATE_BOAT_WATER_SPLASH, p->systemAddress, true, info);
 
 			break;
 		}
 		default:
-			printf("Unknown packet ID: %i\n", packet_id);
+			println(color::red, "Unknown packet ID: %i", packet_id);
 			break;
 		}
 	}

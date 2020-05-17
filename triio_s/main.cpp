@@ -1,7 +1,11 @@
 #include <server/server.h>
 
+#include <shared/console/console.h>
+
 int main()
 {
+	console::init_basic();
+
 	Server* sv = new Server();
 
 	sv->init();

@@ -163,6 +163,8 @@ int main()
 		search_game();
 	else println(color::green, "Game folder: '%s'", game_path.c_str());
 
+	bool dispatch_commands = true;
+
 	auto load_game = [&](const std::string& ip)
 	{
 		if (game_path.empty())
@@ -191,12 +193,21 @@ int main()
 		println(color::cyan, "Launching Tomb Raider II...");
 
 		if (!CreateProcessW(full_game_path.c_str(), (LPWSTR)cmd_line.c_str(), nullptr, nullptr, FALSE, 0, nullptr, game_path_uni.c_str(), &si, &pi))
+		{
+			if (!std::filesystem::is_regular_file(full_game_path))
+				g_registry->set_string("game_path", "");
+
 			return dbg::mod_error(L"Could not launch the game");
+		}
 
 		println(color::cyan, "Tomb Raider II launched");
 
 		if (!inject_dll(get_pid(L"Tomb2.exe"), current_dll_path))
 			return dbg::mod_error(L"Injection failed");
+
+		g_registry->set_string("last_server_ip", ip);
+
+		dispatch_commands = false;
 
 		println(color::cyan, "TRIIO initialized");
 
@@ -216,7 +227,6 @@ int main()
 			return dbg::mod_error(L"Injection failed");
 	}
 #else
-	bool dispatch_commands = true;
 
 	while (dispatch_commands)
 	{
@@ -236,13 +246,30 @@ int main()
 		while (ss >> param)
 			params.push_back(param);
 
-		println(white, "\n");
+		println(white, "");
 
-		if (!cmd.compare("connect") && params.size() == 1)
+		if (!cmd.compare("connect"))
 		{
-			load_game(params[0]);
-
-			dispatch_commands = false;
+			switch (params.size())
+			{
+			case 0:
+			{
+				if (const auto last_server_ip = g_registry->get_string("last_server_ip");
+					!last_server_ip.empty())
+				{
+					load_game(last_server_ip);
+					dispatch_commands = false;
+				}
+				else println(color::red, "You did not join any server recently");
+					
+				break;
+			}
+			case 1:
+			{
+				load_game(params[0]);
+				break;
+			}
+			}
 		}
 		else if (!cmd.compare("exit") || !cmd.compare("quit"))
 			dispatch_commands = false;

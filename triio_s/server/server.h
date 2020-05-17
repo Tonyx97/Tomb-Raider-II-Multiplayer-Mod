@@ -14,6 +14,7 @@
 #include <chrono>
 #include <vector>
 #include <unordered_map>
+#include <any>
 
 #include "slikenet/peerinterface.h"
 #include "slikenet/statistics.h"
@@ -38,8 +39,15 @@ private:
 					name;
 	};
 
+	std::unordered_map<std::string, std::any> settings;
 	std::unordered_map<uint64_t, client_info> clients;
 	std::unordered_map<uint16_t, uint64_t> streamed_entities;
+
+	bool sync_enemies = false,
+		 sync_general_entities = false,
+		 sync_blocks = false,
+		 sync_doors = false,
+		 sync_vehicles = false;
 
 public:
 
@@ -47,6 +55,27 @@ public:
 	~Server();
 
 	bool init();
+
+	template <typename T>
+	bool get_setting(const std::string& value_name, T& value)
+	{
+		auto it = settings.find(value_name);
+		if (it == settings.end())
+			return false;
+
+		try									{ value = std::any_cast<T>(it->second); return true; }
+		catch (const std::bad_any_cast& e)	{ return false; }
+	}
+
+	template <typename T>
+	bool set_setting(const std::string& value_name, T& value)
+	{
+		if (get_setting(value_name, value))
+			return true;
+
+		return false;
+	}
+
 
 	void dispatch_packets();
 };
