@@ -86,7 +86,7 @@ int main_thread()
 		return dbg::mod_error(L"Input system init failed");
 
 	// connect to the server
-	// main server: 212.114.52.62
+	// possible future DM server: 212.114.52.62
 
 	const std::string ip = GetCommandLineA();
 
