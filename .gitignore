@@ -11,4 +11,6 @@
 *.tlog
 *.lib
 *.res
+Release/
+Debug/
 bins/
