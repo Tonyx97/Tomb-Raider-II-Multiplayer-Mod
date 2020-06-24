@@ -54,6 +54,10 @@ int main_thread()
 	console::init();
 #endif
 
+	// load steam overlay to handle the controller input
+
+	LoadLibrary(L"GameOverlayRenderer.dll");
+
 	g_mh.reset(new MHWrapper());
 	g_veh.reset(new VEHHKR());
 	g_registry.reset(new Registry());
