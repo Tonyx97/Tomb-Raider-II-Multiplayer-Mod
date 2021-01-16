@@ -56,7 +56,7 @@ int main_thread()
 
 	// load steam overlay to handle the controller input
 
-	LoadLibrary(L"GameOverlayRenderer.dll");
+	//LoadLibrary(L"GameOverlayRenderer.dll");
 
 	g_mh.reset(new MHWrapper());
 	g_veh.reset(new VEHHKR());

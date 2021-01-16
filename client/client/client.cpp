@@ -50,6 +50,7 @@ bool Client::init()
 
 bool Client::connect(const char* ip, uint16_t port)
 {
+	MessageBoxA(nullptr, ip, ip, MB_OK);
 	return (peer->Connect(ip, port, "pass", sizeof("pass")) == SLNet::CONNECTION_ATTEMPT_STARTED);
 }
 
